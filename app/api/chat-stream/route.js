@@ -12,6 +12,24 @@ export async function POST(request){
             messages: [{role: "user", content: message}],
             stream: true
         });
+        const encoder = new TextEncoder()
+        const readable = new ReadableStream({
+            async start(controller){
+                for await (const chunk of stream){
+                    const content = chunk.choices[0]?.delta?.content || ""
+                    if(content){
+                        controller.enqueue(encoder.encode(`data: ${JSON.stringify({content})}`))
+                    }
+                }
+                controller.close()
+            }
+        })
+        return new Response(readable, {
+            headers: {
+                'Content-Type' : "text/event-stream"
+            }
+        })
+
     } catch (error) {
         
     }
