@@ -36,7 +36,7 @@ export default function Home() {
       <div>
         <textarea
         value={message}
-        onChange={(e) => e.target.value}
+        onChange={(e) => setMessage(e.target.value)}
         placeholder="enter your awesome message"
         rows={4}
         style={{width: "100%", marginBottom: "10px"}}
@@ -53,7 +53,8 @@ export default function Home() {
           border: "1px solid #ccc",
           padding: "10px", 
           whiteSpace: "pre-wrap", 
-          
+          fontSize: "28px", 
+
         }}
       >
         {response}
