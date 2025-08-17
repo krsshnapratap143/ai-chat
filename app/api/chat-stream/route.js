@@ -7,7 +7,7 @@ const openai = new OpenAI({
 export async function POST(request){
     try {
         const { message } = await request.json();
-        const completion = await openai.chat.completions.create({
+        const stream = await openai.chat.completions.create({
             model: "gpt-3.5-turbo", 
             messages: [{role: "user", content: message}],
             stream: true
@@ -26,11 +26,18 @@ export async function POST(request){
         })
         return new Response(readable, {
             headers: {
-                'Content-Type' : "text/event-stream"
+                'Content-Type' : "text/event-stream",
+                'Cache-Control' : 'no-cache',
+                'Connection' : "keep-alive"
             }
-        })
-
-    } catch (error) {
-        
+        }) 
+    } 
+    catch (error) {
+        return Response.json(
+            {
+                error: "failed to process request"
+            }, 
+            {status: 500}
+        );
     }
 }
